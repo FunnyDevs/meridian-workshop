@@ -1,87 +1,87 @@
 <template>
   <div class="restocking">
     <div class="page-header">
-      <h2>Restocking Recommendations</h2>
-      <p>Purchase order recommendations based on stock levels, demand forecast, and budget</p>
+      <h2>{{ t('restocking.title') }}</h2>
+      <p>{{ t('restocking.description') }}</p>
     </div>
 
     <!-- Controls -->
     <div class="controls-bar">
       <select v-model="selectedLocation" @change="loadData">
-        <option value="all">All Warehouses</option>
-        <option value="San Francisco">San Francisco</option>
-        <option value="London">London</option>
-        <option value="Tokyo">Tokyo</option>
+        <option value="all">{{ t('restocking.allWarehouses') }}</option>
+        <option value="San Francisco">{{ t('warehouses.sanFrancisco') }}</option>
+        <option value="London">{{ t('warehouses.london') }}</option>
+        <option value="Tokyo">{{ t('warehouses.tokyo') }}</option>
       </select>
       <select v-model="selectedCategory" @change="loadData">
-        <option value="all">All Categories</option>
-        <option value="sensors">Sensors</option>
-        <option value="actuators">Actuators</option>
-        <option value="controllers">Controllers</option>
-        <option value="circuit boards">Circuit Boards</option>
-        <option value="power supplies">Power Supplies</option>
+        <option value="all">{{ t('restocking.allCategories') }}</option>
+        <option value="sensors">{{ t('categories.sensors') }}</option>
+        <option value="actuators">{{ t('categories.actuators') }}</option>
+        <option value="controllers">{{ t('categories.controllers') }}</option>
+        <option value="circuit boards">{{ t('categories.circuitBoards') }}</option>
+        <option value="power supplies">{{ t('categories.powerSupplies') }}</option>
       </select>
       <div class="budget-input">
-        <span class="budget-label">Budget ceiling</span>
+        <span class="budget-label">{{ t('restocking.budgetLabel') }}</span>
         <input
           v-model.number="budgetInput"
           type="number"
           min="0"
           step="100"
-          placeholder="No limit"
+          :placeholder="t('restocking.budgetPlaceholder')"
           @keydown.enter="applyBudget"
         />
-        <button class="apply-btn" @click="applyBudget">Apply</button>
-        <button v-if="budgetCeiling !== null" class="reset-btn" @click="clearBudget">Clear</button>
+        <button class="apply-btn" @click="applyBudget">{{ t('restocking.apply') }}</button>
+        <button v-if="budgetCeiling !== null" class="reset-btn" @click="clearBudget">{{ t('restocking.clear') }}</button>
       </div>
     </div>
 
     <!-- Budget Summary -->
     <div v-if="!loading && !error" class="budget-card" :class="budgetStatus">
       <div class="budget-stat">
-        <div class="budget-stat-label">Recommendations shown</div>
+        <div class="budget-stat-label">{{ t('restocking.budget.recommendationsShown') }}</div>
         <div class="budget-stat-value">{{ recommendations.length }}</div>
       </div>
       <div class="budget-stat">
-        <div class="budget-stat-label">Total estimated cost</div>
+        <div class="budget-stat-label">{{ t('restocking.budget.totalEstimatedCost') }}</div>
         <div class="budget-stat-value">{{ formatCurrency(totalCost) }}</div>
       </div>
       <div v-if="budgetCeiling !== null" class="budget-stat">
-        <div class="budget-stat-label">Budget ceiling</div>
+        <div class="budget-stat-label">{{ t('restocking.budget.ceiling') }}</div>
         <div class="budget-stat-value">{{ formatCurrency(budgetCeiling) }}</div>
       </div>
       <div v-if="budgetCeiling !== null" class="budget-stat">
-        <div class="budget-stat-label">Remaining budget</div>
+        <div class="budget-stat-label">{{ t('restocking.budget.remaining') }}</div>
         <div class="budget-stat-value">{{ formatCurrency(budgetCeiling - totalCost) }}</div>
       </div>
     </div>
 
-    <div v-if="loading" class="loading">Loading recommendations...</div>
+    <div v-if="loading" class="loading">{{ t('restocking.loading') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
       <div v-if="recommendations.length === 0" class="empty-state">
         <div class="empty-icon">✓</div>
-        <div class="empty-title">No restocking needed</div>
-        <div class="empty-desc">All items are above their reorder point for the selected filters.</div>
+        <div class="empty-title">{{ t('restocking.noRestocking') }}</div>
+        <div class="empty-desc">{{ t('restocking.allAboveReorder') }}</div>
       </div>
 
       <div v-else class="card">
         <div class="card-header">
-          <h3 class="card-title">Purchase Order Recommendations</h3>
+          <h3 class="card-title">{{ t('restocking.tableTitle') }}</h3>
           <span class="item-count">{{ recommendations.length }} item{{ recommendations.length !== 1 ? 's' : '' }}</span>
         </div>
         <div class="table-container">
           <table class="restocking-table">
             <thead>
               <tr>
-                <th>SKU</th>
-                <th>Item</th>
-                <th>Warehouse</th>
-                <th>Stock / Reorder</th>
-                <th>Demand Forecast</th>
-                <th>Recommended Qty</th>
-                <th>Est. Cost</th>
-                <th>Priority</th>
+                <th>{{ t('restocking.table.sku') }}</th>
+                <th>{{ t('restocking.table.item') }}</th>
+                <th>{{ t('restocking.table.warehouse') }}</th>
+                <th>{{ t('restocking.table.stockReorder') }}</th>
+                <th>{{ t('restocking.table.demandForecast') }}</th>
+                <th>{{ t('restocking.table.recommendedQty') }}</th>
+                <th>{{ t('restocking.table.estCost') }}</th>
+                <th>{{ t('restocking.table.priority') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -101,12 +101,12 @@
                 </td>
                 <td>
                   <div class="forecast-cell">
-                    <span v-if="item.forecasted_demand > 0">{{ item.forecasted_demand }} units</span>
-                    <span v-else class="no-data">No data</span>
+                    <span v-if="item.forecasted_demand > 0">{{ item.forecasted_demand }} {{ t('restocking.units') }}</span>
+                    <span v-else class="no-data">{{ t('restocking.noData') }}</span>
                     <span :class="getTrendClass(item.trend)" class="trend-badge">{{ item.trend }}</span>
                   </div>
                 </td>
-                <td><strong>{{ item.recommended_quantity }}</strong> units</td>
+                <td><strong>{{ item.recommended_quantity }}</strong> {{ t('restocking.units') }}</td>
                 <td><strong>{{ formatCurrency(item.estimated_cost) }}</strong></td>
                 <td>
                   <div>
@@ -127,10 +127,12 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
+import { useI18n } from '../composables/useI18n'
 
 export default {
   name: 'Restocking',
   setup() {
+    const { t } = useI18n()
     const { selectedLocation, selectedCategory } = useFilters()
 
     const recommendations = ref([])
@@ -191,6 +193,7 @@ export default {
     onMounted(loadData)
 
     return {
+      t,
       selectedLocation, selectedCategory,
       recommendations, loading, error,
       budgetInput, budgetCeiling,

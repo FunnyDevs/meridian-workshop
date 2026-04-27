@@ -1,45 +1,45 @@
 <template>
   <div class="reports">
     <div class="page-header">
-      <h2>Performance Reports</h2>
-      <p>View quarterly performance metrics and monthly trends</p>
+      <h2>{{ t('reports.title') }}</h2>
+      <p>{{ t('reports.description') }}</p>
     </div>
 
     <div class="reports-filters">
       <select v-model="selectedLocation" @change="loadData">
-        <option value="all">All Warehouses</option>
-        <option value="San Francisco">San Francisco</option>
-        <option value="London">London</option>
-        <option value="Tokyo">Tokyo</option>
+        <option value="all">{{ t('reports.allWarehouses') }}</option>
+        <option value="San Francisco">{{ t('warehouses.sanFrancisco') }}</option>
+        <option value="London">{{ t('warehouses.london') }}</option>
+        <option value="Tokyo">{{ t('warehouses.tokyo') }}</option>
       </select>
       <select v-model="selectedCategory" @change="loadData">
-        <option value="all">All Categories</option>
-        <option value="sensors">Sensors</option>
-        <option value="actuators">Actuators</option>
-        <option value="controllers">Controllers</option>
-        <option value="circuit boards">Circuit Boards</option>
-        <option value="power supplies">Power Supplies</option>
+        <option value="all">{{ t('reports.allCategories') }}</option>
+        <option value="sensors">{{ t('categories.sensors') }}</option>
+        <option value="actuators">{{ t('categories.actuators') }}</option>
+        <option value="controllers">{{ t('categories.controllers') }}</option>
+        <option value="circuit boards">{{ t('categories.circuitBoards') }}</option>
+        <option value="power supplies">{{ t('categories.powerSupplies') }}</option>
       </select>
-      <button v-if="hasActiveFilters" class="reset-btn" @click="resetAndReload">Reset Filters</button>
+      <button v-if="hasActiveFilters" class="reset-btn" @click="resetAndReload">{{ t('reports.resetFilters') }}</button>
     </div>
 
-    <div v-if="loading" class="loading">Loading reports...</div>
+    <div v-if="loading" class="loading">{{ t('reports.loading') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
       <!-- Quarterly Performance -->
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Quarterly Performance</h3>
+          <h3 class="card-title">{{ t('reports.quarterly.title') }}</h3>
         </div>
         <div class="table-container">
           <table class="reports-table">
             <thead>
               <tr>
-                <th>Quarter</th>
-                <th>Total Orders</th>
-                <th>Total Revenue</th>
-                <th>Avg Order Value</th>
-                <th>Fulfillment Rate</th>
+                <th>{{ t('reports.quarterly.quarter') }}</th>
+                <th>{{ t('reports.quarterly.totalOrders') }}</th>
+                <th>{{ t('reports.quarterly.totalRevenue') }}</th>
+                <th>{{ t('reports.quarterly.avgOrderValue') }}</th>
+                <th>{{ t('reports.quarterly.fulfillmentRate') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -55,7 +55,7 @@
                 </td>
               </tr>
               <tr v-if="quarterlyData.length === 0">
-                <td colspan="5" class="empty-state">No data for selected filters</td>
+                <td colspan="5" class="empty-state">{{ t('reports.noData') }}</td>
               </tr>
             </tbody>
           </table>
@@ -65,7 +65,7 @@
       <!-- Monthly Trends Chart -->
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Monthly Revenue Trend</h3>
+          <h3 class="card-title">{{ t('reports.monthlyTrend.title') }}</h3>
         </div>
         <div class="chart-container">
           <div v-if="monthlyData.length > 0" class="bar-chart">
@@ -80,24 +80,24 @@
               <div class="bar-label">{{ formatMonth(month.month) }}</div>
             </div>
           </div>
-          <div v-else class="empty-state">No data for selected filters</div>
+          <div v-else class="empty-state">{{ t('reports.noData') }}</div>
         </div>
       </div>
 
       <!-- Month-over-Month Comparison -->
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Month-over-Month Analysis</h3>
+          <h3 class="card-title">{{ t('reports.monthOverMonth.title') }}</h3>
         </div>
         <div class="table-container">
           <table class="reports-table">
             <thead>
               <tr>
-                <th>Month</th>
-                <th>Orders</th>
-                <th>Revenue</th>
-                <th>Change</th>
-                <th>Growth Rate</th>
+                <th>{{ t('reports.monthOverMonth.month') }}</th>
+                <th>{{ t('reports.monthOverMonth.orders') }}</th>
+                <th>{{ t('reports.monthOverMonth.revenue') }}</th>
+                <th>{{ t('reports.monthOverMonth.change') }}</th>
+                <th>{{ t('reports.monthOverMonth.growthRate') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -119,7 +119,7 @@
                 </td>
               </tr>
               <tr v-if="monthlyData.length === 0">
-                <td colspan="5" class="empty-state">No data for selected filters</td>
+                <td colspan="5" class="empty-state">{{ t('reports.noData') }}</td>
               </tr>
             </tbody>
           </table>
@@ -129,19 +129,19 @@
       <!-- Summary Stats -->
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-label">Total Revenue (YTD)</div>
+          <div class="stat-label">{{ t('reports.stats.totalRevenue') }}</div>
           <div class="stat-value">{{ formatCurrency(totalRevenue) }}</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Avg Monthly Revenue</div>
+          <div class="stat-label">{{ t('reports.stats.avgMonthly') }}</div>
           <div class="stat-value">{{ formatCurrency(avgMonthlyRevenue) }}</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Total Orders (YTD)</div>
+          <div class="stat-label">{{ t('reports.stats.totalOrders') }}</div>
           <div class="stat-value">{{ totalOrders }}</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Best Performing Quarter</div>
+          <div class="stat-label">{{ t('reports.stats.bestQuarter') }}</div>
           <div class="stat-value">{{ bestQuarter || '—' }}</div>
         </div>
       </div>
@@ -153,10 +153,12 @@
 import { ref, computed, onMounted } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
+import { useI18n } from '../composables/useI18n'
 
 export default {
   name: 'Reports',
   setup() {
+    const { t } = useI18n()
     const { selectedLocation, selectedCategory, hasActiveFilters, resetFilters, getCurrentFilters } = useFilters()
 
     const loading = ref(true)
@@ -234,6 +236,7 @@ export default {
     onMounted(loadData)
 
     return {
+      t,
       selectedLocation, selectedCategory, hasActiveFilters,
       loading, error,
       quarterlyData, monthlyData,

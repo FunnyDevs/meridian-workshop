@@ -312,6 +312,76 @@ export default {
     selectLanguage: '言語を選択'
   },
 
+  // Reports
+  reports: {
+    title: 'パフォーマンスレポート',
+    description: '四半期パフォーマンス指標と月次トレンドの表示',
+    allWarehouses: '全倉庫',
+    allCategories: '全カテゴリ',
+    resetFilters: 'フィルターをリセット',
+    loading: 'レポートを読み込み中...',
+    noData: '選択したフィルターにデータがありません',
+    quarterly: {
+      title: '四半期パフォーマンス',
+      quarter: '四半期',
+      totalOrders: '総注文数',
+      totalRevenue: '総収益',
+      avgOrderValue: '平均注文額',
+      fulfillmentRate: '履行率'
+    },
+    monthlyTrend: {
+      title: '月次収益トレンド'
+    },
+    monthOverMonth: {
+      title: '前月比分析',
+      month: '月',
+      orders: '注文数',
+      revenue: '収益',
+      change: '変化',
+      growthRate: '成長率'
+    },
+    stats: {
+      totalRevenue: '総収益（年初来）',
+      avgMonthly: '平均月次収益',
+      totalOrders: '総注文数（年初来）',
+      bestQuarter: '最高パフォーマンス四半期'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: '補充推奨',
+    description: '在庫レベル、需要予測、予算に基づく発注推奨',
+    allWarehouses: '全倉庫',
+    allCategories: '全カテゴリ',
+    budgetLabel: '予算上限',
+    budgetPlaceholder: '制限なし',
+    apply: '適用',
+    clear: 'クリア',
+    loading: '推奨を読み込み中...',
+    noRestocking: '補充不要',
+    allAboveReorder: '選択したフィルターで全品目が再注文点を上回っています。',
+    tableTitle: '発注推奨',
+    units: '単位',
+    noData: 'データなし',
+    budget: {
+      recommendationsShown: '推奨表示数',
+      totalEstimatedCost: '総推定費用',
+      ceiling: '予算上限',
+      remaining: '残余予算'
+    },
+    table: {
+      sku: 'SKU',
+      item: '品目',
+      warehouse: '倉庫',
+      stockReorder: '在庫 / 再注文点',
+      demandForecast: '需要予測',
+      recommendedQty: '推奨数量',
+      estCost: '推定費用',
+      priority: '優先度'
+    }
+  },
+
   // Common
   common: {
     loading: '読み込み中...',

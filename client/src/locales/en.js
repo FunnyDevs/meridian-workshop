@@ -312,6 +312,76 @@ export default {
     selectLanguage: 'Select Language'
   },
 
+  // Reports
+  reports: {
+    title: 'Performance Reports',
+    description: 'View quarterly performance metrics and monthly trends',
+    allWarehouses: 'All Warehouses',
+    allCategories: 'All Categories',
+    resetFilters: 'Reset Filters',
+    loading: 'Loading reports...',
+    noData: 'No data for selected filters',
+    quarterly: {
+      title: 'Quarterly Performance',
+      quarter: 'Quarter',
+      totalOrders: 'Total Orders',
+      totalRevenue: 'Total Revenue',
+      avgOrderValue: 'Avg Order Value',
+      fulfillmentRate: 'Fulfillment Rate'
+    },
+    monthlyTrend: {
+      title: 'Monthly Revenue Trend'
+    },
+    monthOverMonth: {
+      title: 'Month-over-Month Analysis',
+      month: 'Month',
+      orders: 'Orders',
+      revenue: 'Revenue',
+      change: 'Change',
+      growthRate: 'Growth Rate'
+    },
+    stats: {
+      totalRevenue: 'Total Revenue (YTD)',
+      avgMonthly: 'Avg Monthly Revenue',
+      totalOrders: 'Total Orders (YTD)',
+      bestQuarter: 'Best Performing Quarter'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking Recommendations',
+    description: 'Purchase order recommendations based on stock levels, demand forecast, and budget',
+    allWarehouses: 'All Warehouses',
+    allCategories: 'All Categories',
+    budgetLabel: 'Budget ceiling',
+    budgetPlaceholder: 'No limit',
+    apply: 'Apply',
+    clear: 'Clear',
+    loading: 'Loading recommendations...',
+    noRestocking: 'No restocking needed',
+    allAboveReorder: 'All items are above their reorder point for the selected filters.',
+    tableTitle: 'Purchase Order Recommendations',
+    units: 'units',
+    noData: 'No data',
+    budget: {
+      recommendationsShown: 'Recommendations shown',
+      totalEstimatedCost: 'Total estimated cost',
+      ceiling: 'Budget ceiling',
+      remaining: 'Remaining budget'
+    },
+    table: {
+      sku: 'SKU',
+      item: 'Item',
+      warehouse: 'Warehouse',
+      stockReorder: 'Stock / Reorder',
+      demandForecast: 'Demand Forecast',
+      recommendedQty: 'Recommended Qty',
+      estCost: 'Est. Cost',
+      priority: 'Priority'
+    }
+  },
+
   // Common
   common: {
     loading: 'Loading...',
