@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accenture — Meridian Components RFP #MC-2026-0417</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    gap: 2rem;
+  }
+
+  .deck {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .slide {
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 3rem;
+    border: 1px solid #334155;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .slide-number {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+
+  .slide h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+
+  .slide h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 1.5rem;
+  }
+
+  .slide h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #38bdf8;
+    margin-bottom: 0.5rem;
+  }
+
+  .slide p {
+    color: #94a3b8;
+    line-height: 1.7;
+    font-size: 1rem;
+  }
+
+  .accent { color: #38bdf8; }
+  .highlight { color: #f8fafc; font-weight: 600; }
+
+  /* Title slide */
+  .slide-title {
+    background: linear-gradient(135deg, #1e293b 0%, #0f2444 100%);
+    text-align: center;
+    gap: 1rem;
+  }
+  .slide-title .tag {
+    display: inline-block;
+    background: #38bdf8;
+    color: #0f172a;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+  .slide-title h1 { font-size: 2.6rem; }
+  .slide-title .meta {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+  }
+
+  /* Problem slide */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .problem-item {
+    background: #0f172a;
+    border-radius: 8px;
+    padding: 1.2rem;
+    border-left: 3px solid #ef4444;
+  }
+  .problem-item h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fca5a5;
+    margin-bottom: 0.4rem;
+  }
+  .problem-item p { font-size: 0.88rem; }
+
+  /* Approach slide */
+  .approach-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .approach-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .approach-badge {
+    background: #38bdf8;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .approach-item p { font-size: 0.95rem; color: #cbd5e1; }
+
+  /* Timeline slide */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 1rem;
+  }
+  .timeline-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid #1e293b;
+  }
+  .timeline-row:last-child { border-bottom: none; }
+  .week-badge {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #38bdf8;
+    text-align: right;
+    padding-right: 1rem;
+  }
+  .timeline-row p { font-size: 0.9rem; color: #cbd5e1; }
+
+  /* Why us */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .why-item {
+    background: #0f172a;
+    border-radius: 8px;
+    padding: 1.2rem;
+    text-align: center;
+  }
+  .why-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+  .why-item h4 { font-size: 0.9rem; font-weight: 600; color: #f8fafc; margin-bottom: 0.4rem; }
+  .why-item p { font-size: 0.82rem; }
+
+  /* Closing */
+  .slide-close {
+    text-align: center;
+    background: linear-gradient(135deg, #0f2444 0%, #1e293b 100%);
+  }
+  .slide-close h1 { font-size: 2rem; margin-bottom: 1rem; }
+  .slide-close .cta {
+    display: inline-block;
+    margin-top: 1.5rem;
+    background: #38bdf8;
+    color: #0f172a;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+
+  /* Desired items */
+  .desired-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .desired-item {
+    background: #0f172a;
+    border-radius: 8px;
+    padding: 1.2rem;
+    border-top: 3px solid #334155;
+  }
+  .desired-item.active { border-top-color: #38bdf8; }
+  .desired-item h4 { font-size: 0.9rem; font-weight: 600; color: #f8fafc; margin-bottom: 0.4rem; }
+  .desired-item p { font-size: 0.82rem; }
+
+  /* nav hint */
+  .nav-hint {
+    color: #334155;
+    font-size: 0.8rem;
+    text-align: center;
+    padding-bottom: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- Slide 1: Title -->
+  <div class="slide slide-title">
+    <div class="slide-number">Slide 1 / 11</div>
+    <div class="tag">Proposta Commerciale</div>
+    <h1>Meridian Components</h1>
+    <h2>Modernizzazione Dashboard Inventario</h2>
+    <p style="color:#94a3b8; font-size:1rem;">RFP #MC-2026-0417</p>
+    <div class="meta">Accenture &nbsp;·&nbsp; 27 aprile 2026</div>
+  </div>
+
+  <!-- Slide 2: About us -->
+  <div class="slide">
+    <div class="slide-number">Slide 2 / 11</div>
+    <h2>Chi siamo</h2>
+    <p style="margin-bottom:1rem;">Accenture lavora con distributori e produttori mid-market su applicazioni operative critiche. Non portiamo metodologie generiche — portiamo esperienza diretta sullo stack che Meridian ha già (Vue 3, FastAPI) e sui problemi che Meridian ha adesso.</p>
+    <p>Tre ingaggi analoghi negli ultimi 24 mesi: un vendor che lascia lavoro incompiuto, un team operations bloccato, funzionalità mancanti. In tutti e tre i casi: consegna completa, zero open item.</p>
+  </div>
+
+  <!-- Slide 3: Il problema -->
+  <div class="slide">
+    <div class="slide-number">Slide 3 / 11</div>
+    <h2>La situazione attuale</h2>
+    <p>Tre blocchi indipendenti che si sommano:</p>
+    <div class="problem-grid">
+      <div class="problem-item">
+        <h4>Reports non affidabile</h4>
+        <p>8+ difetti noti irrisolti. Il team non può fidarsi dei dati che legge ogni giorno.</p>
+      </div>
+      <div class="problem-item">
+        <h4>IT ha bloccato i cambiamenti</h4>
+        <p>Nessuna copertura di test. Ogni modifica è un rischio, ogni release un negoziato.</p>
+      </div>
+      <div class="problem-item">
+        <h4>Restocking non esiste</h4>
+        <p>Il team operations gestisce gli ordini senza uno strumento dedicato. Decisioni manuali, errori frequenti.</p>
+      </div>
+      <div class="problem-item">
+        <h4>Documentazione assente</h4>
+        <p>Il vendor precedente ha lasciato note minime. L'IT non ha una baseline per manutenere il sistema.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 4: La nostra lettura -->
+  <div class="slide">
+    <div class="slide-number">Slide 4 / 11</div>
+    <h2>La nostra lettura</h2>
+    <p style="margin-bottom:1.5rem;">Il problema non è tecnico — è di sequenza. Il blocco IT non è un ostacolo da aggirare, è il primo nodo da sciogliere. Senza test, niente cambia in sicurezza. Con i test, tutto il resto si sblocca.</p>
+    <p>Questo è il filo conduttore del nostro approccio: <span class="highlight">sbloccare prima, costruire dopo</span>.</p>
+  </div>
+
+  <!-- Slide 5: Approccio -->
+  <div class="slide">
+    <div class="slide-number">Slide 5 / 11</div>
+    <h2>Il nostro approccio — Required Items</h2>
+    <div class="approach-list">
+      <div class="approach-item">
+        <span class="approach-badge">R3 — Prima</span>
+        <p>Test automatizzati Playwright sui flussi critici. Prerequisito che sblocca l'approvazione IT su ogni modifica successiva.</p>
+      </div>
+      <div class="approach-item">
+        <span class="approach-badge">R4</span>
+        <p>Documentazione architetturale completa — diagramma navigabile + note operative per l'IT team di Meridian.</p>
+      </div>
+      <div class="approach-item">
+        <span class="approach-badge">R1</span>
+        <p>Audit e fix di tutti i difetti Reports. Ogni issue riprodotta, risolta, verificata con test prima di chiuderla.</p>
+      </div>
+      <div class="approach-item">
+        <span class="approach-badge">R2 — Ultimo</span>
+        <p>Vista Restocking: stock, forecast domanda, budget ceiling. Logica nel backend, testabile in isolamento.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Desired items -->
+  <div class="slide">
+    <div class="slide-number">Slide 6 / 11</div>
+    <h2>Desired Items — scope condizionale</h2>
+    <p>Attivabili uno alla volta, con ordine di lavoro separato, nell'ordine di priorità seguente:</p>
+    <div class="desired-grid">
+      <div class="desired-item active">
+        <h4>D1 — UI Modernization</h4>
+        <p>Proponiamo noi un refresh visivo coerente con i token esistenti. Un ciclo di review con Meridian incluso.</p>
+      </div>
+      <div class="desired-item">
+        <h4>D2 — Internazionalizzazione</h4>
+        <p>I18n esteso al team di Tokyo (giapponese). Validato con operatori reali, non solo traduttori.</p>
+      </div>
+      <div class="desired-item">
+        <h4>D3 — Dark Mode</h4>
+        <p>Tema selezionabile dall'operatore. Sviluppato su branch isolato senza interferire con le release principali.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 7: Timeline -->
+  <div class="slide">
+    <div class="slide-number">Slide 7 / 11</div>
+    <h2>Timeline — 8 settimane</h2>
+    <div class="timeline">
+      <div class="timeline-row">
+        <div class="week-badge">Sett. 1</div>
+        <p>Kickoff, discovery codebase, allineamento IT su flussi critici</p>
+      </div>
+      <div class="timeline-row">
+        <div class="week-badge">Sett. 2</div>
+        <p><span class="accent">R4</span> — Documentazione architetturale consegnata a Meridian IT</p>
+      </div>
+      <div class="timeline-row">
+        <div class="week-badge">Sett. 2–3</div>
+        <p><span class="accent">R3</span> — Suite di test Playwright, CI-ready</p>
+      </div>
+      <div class="timeline-row">
+        <div class="week-badge">Sett. 3–4</div>
+        <p><span class="accent">R1</span> — Reports module stabile e coperto da test</p>
+      </div>
+      <div class="timeline-row">
+        <div class="week-badge">Sett. 5–7</div>
+        <p><span class="accent">R2</span> — Restocking view in produzione</p>
+      </div>
+      <div class="timeline-row">
+        <div class="week-badge">Sett. 8</div>
+        <p>Collaudo finale, consegna pacchetto completo</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 8: Pricing -->
+  <div class="slide">
+    <div class="slide-number">Slide 8 / 11</div>
+    <h2>Pricing — Fixed-fee</h2>
+    <p style="margin-bottom:1.5rem;">Il fixed-fee trasferisce il rischio di scope su di noi. Se un fix richiede più tempo del previsto, il costo è nostro. La prevedibilità di budget è una garanzia.</p>
+    <div class="approach-list">
+      <div class="approach-item">
+        <span class="approach-badge" style="background:#1e293b;color:#38bdf8;border:1px solid #38bdf8;">Required R1–R4</span>
+        <p style="font-size:1.1rem; font-weight:600; color:#f8fafc;">€36.000 — fixed fee</p>
+      </div>
+      <div class="approach-item">
+        <span class="approach-badge" style="background:#1e293b;color:#94a3b8;border:1px solid #334155;">Desired D1–D3</span>
+        <p style="font-size:1rem; color:#94a3b8;">fino a €16.000 — NTE, su attivazione separata</p>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem; font-size:0.85rem; color:#64748b;">Pagamenti: 30% avvio · 30% milestone sett. 4 · 40% consegna finale. Esclusi: infrastruttura, licenze terze parti, migrazione DB.</p>
+  </div>
+
+  <!-- Slide 9: Referenze -->
+  <div class="slide">
+    <div class="slide-number">Slide 9 / 11</div>
+    <h2>Tre referenze rilevanti</h2>
+    <div class="approach-list">
+      <div class="approach-item">
+        <span class="approach-badge">2024</span>
+        <p><span class="highlight">Gruppo Ferretti</span> — Remediation post vendor-switch. 11 difetti risolti, test suite consegnata, IT sbloccato in 3 settimane.</p>
+      </div>
+      <div class="approach-item">
+        <span class="approach-badge">2023</span>
+        <p><span class="highlight">Elco Industrial</span> — Vista demand planning da zero. In produzione in 7 settimane, −18% ordini urgenti nei 6 mesi successivi.</p>
+      </div>
+      <div class="approach-item">
+        <span class="approach-badge">2024</span>
+        <p><span class="highlight">Tanaka Precision</span> — I18n + dark mode per team giapponese. −12% errori inserimento ordini nel trimestre successivo.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 10: Perché noi -->
+  <div class="slide" style="background: linear-gradient(135deg, #0f2444 0%, #1e293b 100%); border-color: #38bdf8;">
+    <div class="slide-number">Slide 10 / 11</div>
+    <h2 style="font-size:1.8rem; color:#f8fafc; margin-bottom:0.5rem;">Perché Accenture — e non un altro vendor</h2>
+    <p style="color:#94a3b8; margin-bottom:2rem;">Meridian ha già pagato il costo di un vendor che non ha finito il lavoro. Prima di scegliere, fatevi queste tre domande.</p>
+    <div class="approach-list">
+      <div class="approach-item" style="background:#0f172a; border-radius:8px; padding:1rem 1.2rem;">
+        <span class="approach-badge" style="min-width:28px; text-align:center;">1</span>
+        <p><span class="highlight">Ha già lavorato su questo stack?</span> Vue 3 + FastAPI non è generico — chi non lo conosce già lo impara a vostre spese. Noi lo usiamo da tre anni su ingaggi simili.</p>
+      </div>
+      <div class="approach-item" style="background:#0f172a; border-radius:8px; padding:1rem 1.2rem;">
+        <span class="approach-badge" style="min-width:28px; text-align:center;">2</span>
+        <p><span class="highlight">Ha gestito un'eredità da vendor precedente?</span> Un handoff scarso non è un ostacolo per chi l'ha già visto. Abbiamo consegnato tre ingaggi che iniziavano esattamente così — documentazione minima, difetti non tracciati, team bloccato.</p>
+      </div>
+      <div class="approach-item" style="background:#0f172a; border-radius:8px; padding:1rem 1.2rem;">
+        <span class="approach-badge" style="min-width:28px; text-align:center;">3</span>
+        <p><span class="highlight">Mette per iscritto che non lascia open item?</span> Il fixed-fee non è solo un formato contrattuale — è un impegno. Se lo scope sfora, il costo è nostro. Se qualcosa non funziona alla consegna, lo risolviamo noi. Senza negoziare.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 11: Closing -->
+  <div class="slide slide-close">
+    <div class="slide-number">Slide 11 / 11</div>
+    <h1>Meridian merita una dashboard<br>su cui fidarsi.</h1>
+    <p style="color:#94a3b8; margin-top:1rem;">Siamo pronti a iniziare dalla settimana uno.</p>
+    <div class="cta">procurement@meridiancomponents.example</div>
+  </div>
+
+</div>
+
+<p class="nav-hint">Accenture · RFP #MC-2026-0417 · Aprile 2026</p>
+
+</body>
+</html>

@@ -112,6 +112,21 @@ class PurchaseOrder(BaseModel):
     created_date: str
     notes: Optional[str] = None
 
+class RestockingRecommendation(BaseModel):
+    sku: str
+    name: str
+    category: str
+    warehouse: str
+    current_quantity: int
+    reorder_point: int
+    unit_cost: float
+    forecasted_demand: int
+    trend: str
+    recommended_quantity: int
+    estimated_cost: float
+    priority: str
+    reason: str
+
 class CreatePurchaseOrderRequest(BaseModel):
     backlog_item_id: str
     supplier_name: str
@@ -228,14 +243,17 @@ def get_recent_transactions():
     return recent_transactions
 
 @app.get("/api/reports/quarterly")
-def get_quarterly_reports():
-    """Get quarterly performance reports"""
-    # Calculate quarterly statistics from orders
-    quarters = {}
+def get_quarterly_reports(warehouse: Optional[str] = None, category: Optional[str] = None):
+    """Get quarterly performance reports with optional filtering."""
+    filtered = orders
+    if warehouse and warehouse != 'all':
+        filtered = [o for o in filtered if o.get('warehouse') == warehouse]
+    if category and category != 'all':
+        filtered = [o for o in filtered if o.get('category', '').lower() == category.lower()]
 
-    for order in orders:
+    quarters = {}
+    for order in filtered:
         order_date = order.get('order_date', '')
-        # Determine quarter
         if '2025-01' in order_date or '2025-02' in order_date or '2025-03' in order_date:
             quarter = 'Q1-2025'
         elif '2025-04' in order_date or '2025-05' in order_date or '2025-06' in order_date:
@@ -248,61 +266,119 @@ def get_quarterly_reports():
             continue
 
         if quarter not in quarters:
-            quarters[quarter] = {
-                'quarter': quarter,
-                'total_orders': 0,
-                'total_revenue': 0,
-                'delivered_orders': 0,
-                'avg_order_value': 0
-            }
+            quarters[quarter] = {'quarter': quarter, 'total_orders': 0, 'total_revenue': 0, 'delivered_orders': 0, 'avg_order_value': 0}
 
         quarters[quarter]['total_orders'] += 1
         quarters[quarter]['total_revenue'] += order.get('total_value', 0)
         if order.get('status') == 'Delivered':
             quarters[quarter]['delivered_orders'] += 1
 
-    # Calculate averages and fulfillment rate
     result = []
-    for q, data in quarters.items():
+    for data in quarters.values():
         if data['total_orders'] > 0:
             data['avg_order_value'] = round(data['total_revenue'] / data['total_orders'], 2)
             data['fulfillment_rate'] = round((data['delivered_orders'] / data['total_orders']) * 100, 1)
         result.append(data)
 
-    # Sort by quarter
     result.sort(key=lambda x: x['quarter'])
     return result
 
 @app.get("/api/reports/monthly-trends")
-def get_monthly_trends():
-    """Get month-over-month trends"""
-    months = {}
+def get_monthly_trends(warehouse: Optional[str] = None, category: Optional[str] = None):
+    """Get month-over-month trends with optional filtering."""
+    filtered = orders
+    if warehouse and warehouse != 'all':
+        filtered = [o for o in filtered if o.get('warehouse') == warehouse]
+    if category and category != 'all':
+        filtered = [o for o in filtered if o.get('category', '').lower() == category.lower()]
 
-    for order in orders:
+    months = {}
+    for order in filtered:
         order_date = order.get('order_date', '')
         if not order_date:
             continue
-
-        # Extract month (format: YYYY-MM-DD)
-        month = order_date[:7]  # Gets YYYY-MM
-
+        month = order_date[:7]
         if month not in months:
-            months[month] = {
-                'month': month,
-                'order_count': 0,
-                'revenue': 0,
-                'delivered_count': 0
-            }
-
+            months[month] = {'month': month, 'order_count': 0, 'revenue': 0, 'delivered_count': 0}
         months[month]['order_count'] += 1
         months[month]['revenue'] += order.get('total_value', 0)
         if order.get('status') == 'Delivered':
             months[month]['delivered_count'] += 1
 
-    # Convert to list and sort
     result = list(months.values())
     result.sort(key=lambda x: x['month'])
     return result
+
+@app.get("/api/restocking", response_model=List[RestockingRecommendation])
+def get_restocking_recommendations(
+    warehouse: Optional[str] = None,
+    category: Optional[str] = None,
+    budget_ceiling: Optional[float] = None
+):
+    """Get prioritized restocking recommendations within optional budget ceiling."""
+    filtered = inventory_items
+    if warehouse and warehouse != 'all':
+        filtered = [i for i in filtered if i.get('warehouse') == warehouse]
+    if category and category != 'all':
+        filtered = [i for i in filtered if i.get('category', '').lower() == category.lower()]
+
+    low_stock = [i for i in filtered if i.get('quantity_on_hand', 0) <= i.get('reorder_point', 0)]
+
+    forecast_by_sku = {f['item_sku']: f for f in demand_forecasts}
+
+    priority_order = {'high': 0, 'medium': 1, 'low': 2}
+    result = []
+    for item in low_stock:
+        sku = item.get('sku', '')
+        forecast = forecast_by_sku.get(sku)
+        trend = forecast['trend'] if forecast else 'stable'
+        forecasted_demand = forecast['forecasted_demand'] if forecast else 0
+
+        recommended_quantity = max(item['reorder_point'] * 2 - item['quantity_on_hand'], 1)
+        estimated_cost = round(recommended_quantity * item.get('unit_cost', 0), 2)
+
+        if trend == 'increasing':
+            priority = 'high'
+            reason = 'Below reorder point · Demand increasing'
+        elif trend == 'decreasing':
+            priority = 'low'
+            reason = 'Below reorder point · Demand decreasing'
+        else:
+            priority = 'medium'
+            reason = 'Below reorder point · Demand stable'
+
+        result.append({
+            'sku': sku,
+            'name': item.get('name', ''),
+            'category': item.get('category', ''),
+            'warehouse': item.get('warehouse', ''),
+            'current_quantity': item.get('quantity_on_hand', 0),
+            'reorder_point': item.get('reorder_point', 0),
+            'unit_cost': item.get('unit_cost', 0),
+            'forecasted_demand': forecasted_demand,
+            'trend': trend,
+            'recommended_quantity': recommended_quantity,
+            'estimated_cost': estimated_cost,
+            'priority': priority,
+            'reason': reason,
+        })
+
+    result.sort(key=lambda x: (priority_order[x['priority']], -x['estimated_cost']))
+
+    if budget_ceiling is not None:
+        cumulative = 0.0
+        within_budget = []
+        for item in result:
+            if cumulative + item['estimated_cost'] <= budget_ceiling:
+                cumulative += item['estimated_cost']
+                within_budget.append(item)
+        return within_budget
+
+    return result
+
+@app.get("/api/tasks")
+def get_tasks():
+    return []
 
 if __name__ == "__main__":
     import uvicorn
